@@ -177,26 +177,28 @@ namespace sparrow::json_reader
         else if (unit == "MICROSECOND")
         {
             auto values_str = array.at(DATA).get<std::vector<std::string>>();
-            auto values = utils::from_strings_to_Is<int64_t>(values_str)
+            auto values_view = utils::from_strings_to_Is<int64_t>(values_str)
                           | std::views::transform(
                               [](int64_t value)
                               {
                                   return sparrow::chrono::time_microseconds{value};
                               }
                           );
-            return get_array<sparrow::time_microseconds_array>(array, schema, values, name, std::move(metadata));
+            std::vector<sparrow::chrono::time_microseconds> values(values_view.begin(), values_view.end());
+            return get_array<sparrow::time_microseconds_array>(array, schema, std::move(values), name, std::move(metadata));
         }
         else if (unit == "NANOSECOND")
         {
             auto values_str = array.at(DATA).get<std::vector<std::string>>();
-            auto values = utils::from_strings_to_Is<int64_t>(values_str)
+            auto values_view = utils::from_strings_to_Is<int64_t>(values_str)
                           | std::views::transform(
                               [](int64_t value)
                               {
                                   return sparrow::chrono::time_nanoseconds{value};
                               }
                           );
-            return get_array<sparrow::time_nanoseconds_array>(array, schema, values, name, std::move(metadata));
+            std::vector<sparrow::chrono::time_nanoseconds> values(values_view.begin(), values_view.end());
+            return get_array<sparrow::time_nanoseconds_array>(array, schema, std::move(values), name, std::move(metadata));
         }
         else
         {
