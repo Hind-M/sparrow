@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <iostream>
 #include "sparrow/arrow_interface/arrow_array.hpp"
 
 #include "sparrow/arrow_interface/arrow_array_schema_common_release.hpp"
@@ -173,9 +174,21 @@ namespace sparrow
                 buffers[1] = make_buffer(1, size * 16);
                 for (size_t i = 0; i < num_extra_data_buffers; ++i)
                 {
-                    buffers[i + 2] = make_buffer(i + 2, var_buffer_sizes[i]);
+                    std::cout << "IN FOR LOOP " << std::endl;
+                    if (var_buffer_sizes != nullptr)
+                    {
+                        std::cout << "var_buffer_sizes is not null " << std::endl;
+                        buffers[i + 2] = make_buffer(i + 2, var_buffer_sizes[i]);
+                    }
+                    else
+                    {
+                        std::cout << "var_buffer_sizes is null " << std::endl;
+                        buffers[i + 2] = make_buffer(i + 2, 0); // Create an empty buffer_view
+                    }
                 }
+                std::cout << "before buffers back " << std::endl;
                 buffers.back() = make_buffer(buffer_count - 1, num_extra_data_buffers * 8);
+                std::cout << "after buffers back " << std::endl;
                 return buffers;
         }
         // To avoid stupid warning "control reaches end of non-void function"
