@@ -167,7 +167,7 @@ namespace sparrow
             case data_type::STRING_VIEW:
             case data_type::BINARY_VIEW:
                 const auto buffer_count = static_cast<size_t>(array.n_buffers);
-                const auto num_extra_data_buffers = buffer_count - 3;
+                const auto num_extra_data_buffers = (array.length == 0) ? 0 : (buffer_count - 3);
                 std::vector<buffer_view_type> buffers(buffer_count);
                 int64_t* var_buffer_sizes = static_const_ptr_cast<int64_t>(array.buffers[buffer_count - 1]);
                 buffers[0] = make_valid_buffer();
@@ -187,7 +187,14 @@ namespace sparrow
                     }
                 }
                 std::cout << "before buffers back " << std::endl;
-                buffers.back() = make_buffer(buffer_count - 1, num_extra_data_buffers * 8);
+                if (var_buffer_sizes == nullptr)
+                {
+                    buffers.back() = make_buffer(buffer_count - 1, 0);
+                }
+                else
+                {
+                    buffers.back() = make_buffer(buffer_count - 1, num_extra_data_buffers * 8);
+                }
                 std::cout << "after buffers back " << std::endl;
                 return buffers;
         }
